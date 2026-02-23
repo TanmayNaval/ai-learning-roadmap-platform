@@ -48,6 +48,7 @@ Update `backend/.env`:
 PORT=5001
 MONGO_URI=your_mongodb_connection_string
 GROQ_API_KEY=gsk_your_real_key
+FRONTEND_URL=http://localhost:3000
 ```
 
 Start backend:
@@ -69,10 +70,17 @@ Backend runs on: `http://localhost:5001`
 ```bash
 cd frontend
 npm install
+cp .env.example .env.local
 npm run dev
 ```
 
 Frontend runs on: `http://localhost:3000`
+
+`frontend/.env.local`:
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:5001
+```
 
 ## How To Use
 
@@ -118,7 +126,12 @@ Important:
 - Frontend: deploy to Vercel
 - Backend: deploy to Render/Railway
 - Database: keep using MongoDB Atlas
-- Add the same env vars (`MONGO_URI`, `GROQ_API_KEY`) in your backend hosting provider
+- Add backend env vars in hosting provider:
+  - `MONGO_URI`
+  - `GROQ_API_KEY`
+  - `FRONTEND_URL=https://your-frontend-domain.vercel.app`
+- Add frontend env var in Vercel:
+  - `NEXT_PUBLIC_API_URL=https://your-backend-domain.onrender.com`
 
 ## Troubleshooting
 

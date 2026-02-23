@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 
 const initialForm = { name: "", skills: "", interests: "", goals: "" };
+const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001").replace(/\/$/, "");
 
 export default function Home() {
   const [form, setForm] = useState(initialForm);
@@ -24,7 +25,7 @@ export default function Home() {
     setRoadmap("Building your roadmap...");
 
     try {
-      const res = await fetch("http://localhost:5001/api/roadmap/generate", {
+      const res = await fetch(`${API_BASE_URL}/api/roadmap/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form)
