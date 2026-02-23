@@ -8,6 +8,7 @@ const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001"
 export default function Home() {
   const [form, setForm] = useState(initialForm);
   const [roadmap, setRoadmap] = useState("");
+  const [roadmapData, setRoadmapData] = useState(null);
   const [status, setStatus] = useState("idle");
 
   const canSubmit = useMemo(() => {
@@ -22,6 +23,7 @@ export default function Home() {
     if (!canSubmit) return;
 
     setStatus("loading");
+    setRoadmapData(null);
     setRoadmap("Building your roadmap...");
 
     try {
@@ -39,6 +41,7 @@ export default function Home() {
       }
 
       setStatus("success");
+      setRoadmapData(data.roadmapData || null);
       setRoadmap(data.roadmap || "No roadmap was returned.");
     } catch (error) {
       setStatus("error");
@@ -109,7 +112,72 @@ export default function Home() {
             <h2>Generated Roadmap</h2>
             <span className={`status-pill status-${status}`}>{status}</span>
           </div>
-          <pre>{roadmap || "Your roadmap will appear here after generation."}</pre>
+          {roadmapData ? (
+            <div className="roadmap-content">
+              <section className="roadmap-card">
+                <h3>Quick Summary</h3>
+                <p>{roadmapData.summary || "No summary available."}</p>
+              </section>
+
+              {!!roadmapData.weeklyPlan?.length && (
+                <section className="roadmap-card">
+                  <h3>Weekly Routine</h3>
+                  <ul>
+                    {roadmapData.weeklyPlan.map((item, idx) => (
+                      <li key={`weekly-${idx}`}>{item}</li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+
+              {roadmapData.phases?.map((phase, idx) => (
+                <section className="roadmap-card" key={`phase-${idx}`}>
+                  <div className="phase-head">
+                    <h3>
+                      Phase {idx + 1}: {phase.title}
+                    </h3>
+                    <span>{phase.duration}</span>
+                  </div>
+                  <p className="phase-focus">{phase.focus}</p>
+
+                  {!!phase.actions?.length && (
+                    <>
+                      <h4>Actions</h4>
+                      <ul>
+                        {phase.actions.map((action, actionIndex) => (
+                          <li key={`action-${idx}-${actionIndex}`}>{action}</li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
+
+                  {!!phase.projects?.length && (
+                    <>
+                      <h4>Projects</h4>
+                      <ul>
+                        {phase.projects.map((project, projectIndex) => (
+                          <li key={`project-${idx}-${projectIndex}`}>{project}</li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
+
+                  {!!phase.resources?.length && (
+                    <>
+                      <h4>Resources</h4>
+                      <ul>
+                        {phase.resources.map((resource, resourceIndex) => (
+                          <li key={`resource-${idx}-${resourceIndex}`}>{resource}</li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
+                </section>
+              ))}
+            </div>
+          ) : (
+            <pre>{roadmap || "Your roadmap will appear here after generation."}</pre>
+          )}
         </article>
       </section>
     </main>
