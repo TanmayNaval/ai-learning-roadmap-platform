@@ -65,7 +65,6 @@ body {
 
 .hero {
   max-width: 760px;
-  animation: rise 0.65s ease-out both;
 }
 
 .badge {
@@ -102,13 +101,35 @@ body {
 }
 
 .panel {
+  position: relative;
+  overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.8);
   border-radius: 20px;
   background: var(--bg-elevated);
   backdrop-filter: blur(14px);
   box-shadow: var(--shadow);
   padding: 22px;
-  animation: rise 0.75s ease-out both;
+  transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+}
+
+.panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 10%, rgba(255, 255, 255, 0.35) 35%, transparent 60%);
+  transform: translateX(-130%);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.panel:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 28px 68px rgba(28, 44, 72, 0.2);
+  border-color: rgba(186, 217, 240, 0.95);
+}
+
+.panel:hover::before {
+  animation: panelSweep 900ms ease;
 }
 
 .panel h2 {
@@ -165,7 +186,8 @@ button {
   font-weight: 700;
   font-size: 0.95rem;
   color: #fff;
-  background: linear-gradient(135deg, var(--brand) 0%, #0e93b3 100%);
+  background: linear-gradient(120deg, #0a6f8f 0%, #17a4c4 50%, #0a6f8f 100%);
+  background-size: 200% 100%;
   cursor: pointer;
   transition: transform 120ms ease, opacity 120ms ease, box-shadow 120ms ease;
 }
@@ -173,6 +195,7 @@ button {
 button:hover:not(:disabled) {
   transform: translateY(-1px);
   box-shadow: 0 10px 24px rgba(8, 106, 138, 0.33);
+  animation: ctaSlide 1000ms linear infinite;
 }
 
 button:disabled {
@@ -243,6 +266,13 @@ button:disabled {
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.72);
   padding: 12px 13px;
+  transition: transform 170ms ease, border-color 170ms ease, box-shadow 170ms ease;
+}
+
+.roadmap-card:hover {
+  transform: translateY(-2px);
+  border-color: #b9cae4;
+  box-shadow: 0 8px 18px rgba(32, 69, 112, 0.12);
 }
 
 .roadmap-card h3 {
@@ -296,6 +326,30 @@ button:disabled {
   font-size: 0.92rem;
 }
 
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  animation: rise 600ms ease forwards;
+}
+
+.r1 { animation-delay: 40ms; }
+.r2 { animation-delay: 100ms; }
+.r3 { animation-delay: 170ms; }
+.r4 { animation-delay: 250ms; }
+
+.reveal-card {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: riseCard 450ms ease forwards;
+}
+
+.roadmap-card:nth-child(1) { animation-delay: 20ms; }
+.roadmap-card:nth-child(2) { animation-delay: 90ms; }
+.roadmap-card:nth-child(3) { animation-delay: 160ms; }
+.roadmap-card:nth-child(4) { animation-delay: 230ms; }
+.roadmap-card:nth-child(5) { animation-delay: 300ms; }
+.roadmap-card:nth-child(6) { animation-delay: 370ms; }
+
 @media (max-width: 980px) {
   .workspace {
     grid-template-columns: 1fr;
@@ -305,6 +359,21 @@ button:disabled {
   .roadmap-content {
     min-height: 320px;
     max-height: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambient,
+  .reveal,
+  .reveal-card,
+  .panel:hover::before,
+  button:hover:not(:disabled) {
+    animation: none !important;
+  }
+
+  .panel,
+  .roadmap-card {
+    transition: none;
   }
 }
 
@@ -327,4 +396,26 @@ button:disabled {
   50% {
     transform: translateY(-12px);
   }
+}
+
+@keyframes riseCard {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes panelSweep {
+  to {
+    transform: translateX(130%);
+  }
+}
+
+@keyframes ctaSlide {
+  from { background-position: 0% 50%; }
+  to { background-position: 200% 50%; }
 }

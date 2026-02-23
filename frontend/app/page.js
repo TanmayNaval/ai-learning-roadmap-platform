@@ -43,6 +43,7 @@ export default function Home() {
       setStatus("success");
       setRoadmapData(data.roadmapData || null);
       setRoadmap(data.roadmap || "No roadmap was returned.");
+      setForm(initialForm);
     } catch (error) {
       setStatus("error");
       setRoadmap(`Error: ${error.message || "Request failed"}`);
@@ -50,11 +51,11 @@ export default function Home() {
   };
 
   return (
-    <main className="page-shell">
+    <main className="page-shell glass-theme">
       <div className="ambient ambient-one" aria-hidden="true" />
       <div className="ambient ambient-two" aria-hidden="true" />
 
-      <section className="hero">
+      <section className="hero reveal r1">
         <p className="badge">Career Planning Assistant</p>
         <h1>Design Your AI Career Roadmap</h1>
         <p className="subtext">
@@ -62,15 +63,16 @@ export default function Home() {
         </p>
       </section>
 
-      <section className="workspace">
-        <article className="panel panel-form">
+      <section className="workspace reveal r2">
+        <article className="panel panel-form reveal r3">
           <h2>Profile Inputs</h2>
           <p className="hint">Fill all fields for better roadmap quality.</p>
 
           <label htmlFor="name">Name</label>
           <input
             id="name"
-            placeholder="e.g. Tanmay"
+            placeholder="Enter your name"
+            autoComplete="off"
             value={form.name}
             onChange={(e) => updateField("name", e.target.value)}
           />
@@ -80,6 +82,7 @@ export default function Home() {
             id="skills"
             rows={3}
             placeholder="Python, SQL, data structures, React..."
+            autoComplete="off"
             value={form.skills}
             onChange={(e) => updateField("skills", e.target.value)}
           />
@@ -89,6 +92,7 @@ export default function Home() {
             id="interests"
             rows={3}
             placeholder="LLMs, computer vision, product AI, research..."
+            autoComplete="off"
             value={form.interests}
             onChange={(e) => updateField("interests", e.target.value)}
           />
@@ -98,29 +102,30 @@ export default function Home() {
             id="goals"
             rows={3}
             placeholder="Get an AI engineer role in 6 months..."
+            autoComplete="off"
             value={form.goals}
             onChange={(e) => updateField("goals", e.target.value)}
           />
 
-          <button type="button" onClick={submit} disabled={!canSubmit}>
+          <button className="cta" type="button" onClick={submit} disabled={!canSubmit}>
             {status === "loading" ? "Generating..." : "Generate Roadmap"}
           </button>
         </article>
 
-        <article className="panel panel-output">
+        <article className="panel panel-output reveal r4">
           <div className="panel-header">
             <h2>Generated Roadmap</h2>
             <span className={`status-pill status-${status}`}>{status}</span>
           </div>
           {roadmapData ? (
-            <div className="roadmap-content">
-              <section className="roadmap-card">
+            <div className={`roadmap-content state-${status}`}>
+              <section className="roadmap-card reveal-card">
                 <h3>Quick Summary</h3>
                 <p>{roadmapData.summary || "No summary available."}</p>
               </section>
 
               {!!roadmapData.weeklyPlan?.length && (
-                <section className="roadmap-card">
+                <section className="roadmap-card reveal-card">
                   <h3>Weekly Routine</h3>
                   <ul>
                     {roadmapData.weeklyPlan.map((item, idx) => (
@@ -131,7 +136,7 @@ export default function Home() {
               )}
 
               {roadmapData.phases?.map((phase, idx) => (
-                <section className="roadmap-card" key={`phase-${idx}`}>
+                <section className="roadmap-card reveal-card" key={`phase-${idx}`}>
                   <div className="phase-head">
                     <h3>
                       Phase {idx + 1}: {phase.title}
